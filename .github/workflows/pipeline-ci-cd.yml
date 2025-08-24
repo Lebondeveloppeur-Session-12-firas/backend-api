@@ -1,0 +1,33 @@
+# ✅ Name of the Workflow
+name: Pipeline CI/CD Backend-api
+
+# ✅ Trigger this workflow on push to main branch (Déclencher ce workflow lors d'une poussée vers la branche principale)
+on:
+  push: 
+    branches:
+      - main
+
+# ✅ Global Environment Variables
+env:
+  BUILD_NUMBER: ${{ github.run_number }}  # Unique build number for the pipeline run
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/backend-api:${{ github.run_number }}
+  BACKEND_URL: "https://api.lebondeveloppeur.net"
+
+jobs:
+  # ✅ Run Unit Tests
+  unit-test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm test
